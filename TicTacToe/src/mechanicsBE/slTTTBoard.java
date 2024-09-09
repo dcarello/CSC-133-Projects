@@ -10,15 +10,16 @@ public class slTTTBoard {
     private boolean validInput = false;
     private int row;
     private int col;
+    private final char PLAYER_CHAR = 'P';
 
 
     public slTTTBoard(){
 
         // for the rows
-        for (int i = 0; i < 3; i++){
+        for (int row = 0; row < 3; row++){
             // for the columns
-            for (int j = 0; j < 3; j++){
-                board[i][j] = '-';
+            for (int col = 0; col < 3; col++){
+                board[row][col] = '-';
             }
         }
     }
@@ -46,10 +47,10 @@ public class slTTTBoard {
     // Prints the current board
     public void printBoard(){
         // for the rows
-        for (int i = 0; i < 3; i++){
+        for (int row = 0; row < 3; row++){
             // for the columns
-            for (int j = 0; j < 3; j++){
-                System.out.print(board[i][j] + "\t");
+            for (int col = 0; col < 3; col++){
+                System.out.print(board[row][col] + "\t");
             }
             System.out.println("\n");
         }
@@ -101,18 +102,18 @@ public class slTTTBoard {
 
     // Updates the board with input
     private void updateBoard(){
-        board[row][col] = 'P';
+        board[row][col] = PLAYER_CHAR;
     }
 
     // Check for continue
     private void checkContinue(){
         boolean cont = false;
         // for the rows
-        for (int i = 0; i < 3; i++){
+        for (int row = 0; row < 3; row++){
             // for the columns
-            for (int j = 0; j < 3; j++){
+            for (int col = 0; col < 3; col++){
                 // if there is an open spot continue is set to true and breaks out of the loops
-                if (board[i][j] == '-'){
+                if (board[row][col] == '-'){
                     cont = true;
                     break;
                 }

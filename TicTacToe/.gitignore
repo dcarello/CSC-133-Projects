@@ -3,6 +3,9 @@ out/
 !**/src/main/**/out/
 !**/src/test/**/out/
 
+TicTacToe.zip
+TicTacToe/GitLog_Assignment#1.jpg
+
 ### Eclipse ###
 .apt_generated
 .classpath
