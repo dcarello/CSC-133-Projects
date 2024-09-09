@@ -7,7 +7,9 @@ import java.util.Scanner;
 
 public class slTTTBoard {
 
-    private char [][] board = new char[3][3];
+    private final int BOARD_ROWS = 3;
+    private final int BOARD_COLS = 3;
+    private char [][] board = new char[BOARD_ROWS][BOARD_COLS];
     private boolean end = false;
     private String userInput;
     private boolean validInput = false;
@@ -32,11 +34,10 @@ public class slTTTBoard {
 
 
     public slTTTBoard(){
-
         // for the rows
-        for (int row = 0; row < 3; row++){
+        for (int row = 0; row < BOARD_ROWS; row++){
             // for the columns
-            for (int col = 0; col < 3; col++){
+            for (int col = 0; col < BOARD_COLS; col++){
                 board[row][col] = '-';
             }
         }
@@ -54,6 +55,9 @@ public class slTTTBoard {
                 // switches current player after turn is over
                 gameFE.setCurrentPlayer("Player");
                 printBoard();
+                if (end){
+                    break;
+                }
             }else if (gameFE.getCurrentPlayer().equalsIgnoreCase("Player")) {
                 int quitGame = playerTurn();
                 if (quitGame == 1) {
@@ -61,8 +65,13 @@ public class slTTTBoard {
                 }
                 // switches current player after turn is over
                 gameFE.setCurrentPlayer("Machine");
+
+                if (end){
+                    printBoard();
+                }
             }
         }
+
     }
 
     private void computerTurn(){
@@ -92,9 +101,9 @@ public class slTTTBoard {
     // Prints the current board
     public void printBoard(){
         // for the rows
-        for (int row = 0; row < 3; row++){
+        for (int row = 0; row < BOARD_ROWS; row++){
             // for the columns
-            for (int col = 0; col < 3; col++){
+            for (int col = 0; col < BOARD_COLS; col++){
                 System.out.print(board[row][col] + "\t");
             }
             System.out.println("\n");
@@ -130,11 +139,11 @@ public class slTTTBoard {
         // adds the chars to the row and col and checks if they are in range
         row = Character.getNumericValue(userInput.charAt(0));
         col = Character.getNumericValue(userInput.charAt(2));
-        if (row > 2 || row < 0){
+        if ((row > (BOARD_ROWS - 1)) || (row < 0)){
             System.out.println("Not a valid input");
             return;
         }
-        if (col > 2 || col < 0){
+        if ((col > (BOARD_COLS - 1)) || (col < 0)){
             System.out.println("Not a valid input");
             return;
         }
@@ -159,11 +168,16 @@ public class slTTTBoard {
 
     // Check for continue
     private void checkContinue(){
+        if (checkWin()){
+            end = true;
+            return;
+        }
+
         boolean cont = false;
         // for the rows
-        for (int row = 0; row < 3; row++){
+        for (int row = 0; row < BOARD_ROWS; row++){
             // for the columns
-            for (int col = 0; col < 3; col++){
+            for (int col = 0; col < BOARD_COLS; col++){
                 // if there is an open spot continue is set to true and breaks out of the loops
                 if (board[row][col] == '-'){
                     cont = true;
@@ -177,6 +191,93 @@ public class slTTTBoard {
         if (!cont){
             end = true;
         }
+    }
 
+    private boolean checkWin(){
+        if (checkHorizontal()){
+            return true;
+        }else if (checkVertical()){
+            return true;
+        }else if (checkForwardDiagonal()){
+            return true;
+        }else{
+            return checkReverseDiagonal();
+        }
+    }
+
+    private boolean checkHorizontal(){
+        char currentBox;
+        for (int row = 0; row < BOARD_ROWS; row++){
+            currentBox = board[row][0];
+            if (currentBox == '-'){
+                continue;
+            }
+            for (int col = 1; col < BOARD_COLS; col++){
+                if (currentBox != board[row][col]){
+                    break;
+                }
+                if (col == 2){
+                    System.out.println("You won horizontally");
+                    return true;
+                }
+            }
+        }
+        return false;
+    }
+
+    private boolean checkVertical(){
+        char currentBox;
+        for (int col = 0; col < BOARD_COLS; col++){
+            currentBox = board[0][col];
+            if (currentBox == '-'){
+                continue;
+            }
+            for (int row = 1; row < BOARD_ROWS; row++){
+                if (currentBox != board[row][col]){
+                    break;
+                }
+                if (row == 2){
+                    System.out.println("You won Vertically");
+                    return true;
+                }
+            }
+        }
+        return false;
+    }
+
+    private boolean checkForwardDiagonal(){
+        char currentBox = board[0][2];
+        int col = 1;
+        for (int row = 1; row < BOARD_ROWS; row++){
+            if (currentBox == '-'){
+                break;
+            }
+            if (currentBox != board[row][col]){
+                break;
+            }
+            if (row == 2){
+                System.out.println("You won forward diagonal");
+                return true;
+            }
+            col--;
+        }
+        return false;
+    }
+
+    private boolean checkReverseDiagonal(){
+        char currentBox = board[0][0];
+        for (int coord = 1; coord < BOARD_ROWS; coord++){
+            if (currentBox == '-'){
+                break;
+            }
+            if (currentBox != board[coord][coord]){
+                break;
+            }
+            if (coord == 2){
+                System.out.println("You won reverse diagonal");
+                return true;
+            }
+        }
+        return false;
     }
 }
