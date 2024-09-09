@@ -1,5 +1,8 @@
 package mechanicsBE;
 
+import csc133.gameFE;
+
+import java.util.ArrayList;
 import java.util.Scanner;
 
 public class slTTTBoard {
@@ -10,7 +13,22 @@ public class slTTTBoard {
     private boolean validInput = false;
     private int row;
     private int col;
-    private final char PLAYER_CHAR = 'P';
+
+    private final ArrayList<String> computersMoves = new ArrayList<>();
+
+    private void loadMoves(){
+        computersMoves.add("1 1");
+        computersMoves.add("0 2");
+        computersMoves.add("0 0");
+        computersMoves.add("2 2");
+        computersMoves.add("2 0");
+        computersMoves.add("0 1");
+        computersMoves.add("1 2");
+        computersMoves.add("1 0");
+        computersMoves.add("2 1");
+    }
+
+
 
 
     public slTTTBoard(){
@@ -25,23 +43,50 @@ public class slTTTBoard {
     }
 
     public void play(){
+        gameFE.introduction();
+
+        loadMoves();
+
         // play loop
         while(!end){
-            // reset input
-            validInput = false;
-
-            while (!validInput){
-                userPrompt();
-                validateInput();
+            if (gameFE.getCurrentPlayer().equalsIgnoreCase("Machine")){
+                computerTurn();
+                // switches current player after turn is over
+                gameFE.setCurrentPlayer("Player");
+                printBoard();
+            }else if (gameFE.getCurrentPlayer().equalsIgnoreCase("Player")) {
+                int quitGame = playerTurn();
+                if (quitGame == 1) {
+                    break;
+                }
+                // switches current player after turn is over
+                gameFE.setCurrentPlayer("Machine");
             }
-            if (end){
-                break;
-            }
-            updateBoard();
-            checkContinue();
-            printBoard();
         }
+    }
 
+    private void computerTurn(){
+        userInput = computersMoves.getFirst();
+        computersMoves.removeFirst();
+        validateInput();
+        updateBoard();
+        checkContinue();
+
+    }
+
+    private int playerTurn(){
+        // reset input
+        validInput = false;
+        while (!validInput){
+            userPrompt();
+            validateInput();
+        }
+        if (end){
+            return 1;
+        }
+        updateBoard();
+        checkContinue();
+        return 0;
     }
 
     // Prints the current board
@@ -79,6 +124,9 @@ public class slTTTBoard {
             System.out.println("Not a valid input");
             return;
         }
+
+        computersMoves.remove(userInput);
+
         // adds the chars to the row and col and checks if they are in range
         row = Character.getNumericValue(userInput.charAt(0));
         col = Character.getNumericValue(userInput.charAt(2));
@@ -102,7 +150,11 @@ public class slTTTBoard {
 
     // Updates the board with input
     private void updateBoard(){
-        board[row][col] = PLAYER_CHAR;
+        if (gameFE.getCurrentPlayer().equalsIgnoreCase("Player")){
+            board[row][col] = gameFE.getPLAYER_CHAR();
+        }else if(gameFE.getCurrentPlayer().equalsIgnoreCase("Machine")){
+            board[row][col] = gameFE.getCOMPUTER_CHAR();
+        }
     }
 
     // Check for continue
