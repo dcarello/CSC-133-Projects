@@ -39,7 +39,7 @@ public class gameFE {
     return userInput;
   }
 
-  private void introduction() {
+  private int introduction() {
     Scanner kb = new Scanner(System.in);
     boolean input = false;
     while (!input) {
@@ -52,8 +52,11 @@ public class gameFE {
       } else if (tmp.equalsIgnoreCase("y")) {
         currentPlayer = "Player";
         input = true;
+      }else if (tmp.equalsIgnoreCase("q")){
+        return slTTTBoard.GAME_QUIT;
       }
     }
+    return 0;
   }
 
   public void startGame() {
@@ -61,9 +64,12 @@ public class gameFE {
     while (gameContinue) {
       end = false;
       slTTTBoard.clearBoard();
-      introduction();
+      int exit_status = introduction();
       while (!end) {
-        int exit_status = slTTTBoard.play();
+        if (exit_status == 0){
+          exit_status = slTTTBoard.play();
+        }
+
         switch (exit_status) {
           case slTTTBoard.GAME_QUIT:
             System.out.println("\nSorry to see you go; come again!");
